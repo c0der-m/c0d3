@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Digital Literacy Assistant</title>
+</head>
+<body>
+    <h1>Welcome to the Digital Literacy Assistant!</h1>
+    <form id="question-form">
+        <label for="user-question">Enter your question:</label>
+        <input type="text" id="user-question" />
+        <button type="submit">Get answer 🤖</button>
+    </form>
+    <div id="response-container">
+        <textarea id="response-text" rows="10" cols="50" readonly></textarea>
+    </div>
+
+    <script>
+        var form = document.getElementById("question-form");
+        var userQuestionInput = document.getElementById("user-question");
+        var responseTextArea = document.getElementById("response-text");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            var userQuestion = userQuestionInput.value;
+
+            fetch("/get_answer", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    question: userQuestion
+                })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                var response = data.response;
+                responseTextArea.value = response;
+            })
+            .catch(function(error) {
+                console.log("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>
